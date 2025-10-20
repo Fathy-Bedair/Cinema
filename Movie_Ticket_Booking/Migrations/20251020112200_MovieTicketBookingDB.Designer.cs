@@ -12,7 +12,7 @@ using Movie_Ticket_Booking.DataAccess;
 namespace Movie_Ticket_Booking.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251016175446_MovieTicketBookingDB")]
+    [Migration("20251020112200_MovieTicketBookingDB")]
     partial class MovieTicketBookingDB
     {
         /// <inheritdoc />
@@ -49,11 +49,13 @@ namespace Movie_Ticket_Booking.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Bio")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("ProfilePictureURL")
                         .HasColumnType("nvarchar(max)");
@@ -72,11 +74,13 @@ namespace Movie_Ticket_Booking.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.HasKey("Id");
 
@@ -92,14 +96,16 @@ namespace Movie_Ticket_Booking.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<string>("Logo")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.HasKey("Id");
 
@@ -121,12 +127,14 @@ namespace Movie_Ticket_Booking.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<bool>("InCinema")
                         .HasColumnType("bit");
 
                     b.Property<string>("PosterURL")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Price")
@@ -135,12 +143,10 @@ namespace Movie_Ticket_Booking.Migrations
                     b.Property<DateTime>("ReleaseDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("SubImages")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -149,6 +155,19 @@ namespace Movie_Ticket_Booking.Migrations
                     b.HasIndex("CinemaId");
 
                     b.ToTable("Movies");
+                });
+
+            modelBuilder.Entity("Movie_Ticket_Booking.Models.MovieSubImage", b =>
+                {
+                    b.Property<int>("MovieId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Img")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("MovieId", "Img");
+
+                    b.ToTable("MovieSubImage");
                 });
 
             modelBuilder.Entity("MovieActor", b =>
@@ -185,6 +204,15 @@ namespace Movie_Ticket_Booking.Migrations
                     b.Navigation("Cinema");
                 });
 
+            modelBuilder.Entity("Movie_Ticket_Booking.Models.MovieSubImage", b =>
+                {
+                    b.HasOne("Movie_Ticket_Booking.Models.Movie", null)
+                        .WithMany("MovieSubImages")
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Movie_Ticket_Booking.Models.Category", b =>
                 {
                     b.Navigation("Movies");
@@ -193,6 +221,11 @@ namespace Movie_Ticket_Booking.Migrations
             modelBuilder.Entity("Movie_Ticket_Booking.Models.Cinema", b =>
                 {
                     b.Navigation("Movies");
+                });
+
+            modelBuilder.Entity("Movie_Ticket_Booking.Models.Movie", b =>
+                {
+                    b.Navigation("MovieSubImages");
                 });
 #pragma warning restore 612, 618
         }

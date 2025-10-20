@@ -1,0 +1,40 @@
+﻿@model Actor
+
+@{
+    ViewData["Title"] = "Create Actoe";
+}
+
+<div class="container my-4">
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <h3 class="mb-4"><i class="bi bi-plus-circle"></i> Add New Actor</h3>
+
+            <form asp-action="Create" asp-controller="Actor" asp-area="Admin" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Bio" class="form-label"></label>
+                    <textarea asp-for="Bio" class="form-control"></textarea>
+                    <span asp-validation-for="Bio" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="ProfilePictureURL" class="form-label">Upload Photo</label>
+                    <input class="form-control" type="file" name="photo" placeholder=" Choose photo" />
+
+                </div>
+
+                <button type="submit" class="btn btn-primary">Create</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

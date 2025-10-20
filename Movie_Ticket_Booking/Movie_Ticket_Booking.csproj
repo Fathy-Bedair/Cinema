@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\assets\img\subImags\**" />
+    <Content Remove="wwwroot\assets\img\subImags\**" />
+    <EmbeddedResource Remove="wwwroot\assets\img\subImags\**" />
+    <None Remove="wwwroot\assets\img\subImags\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.10">
@@ -14,6 +21,13 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\assets\img\cinema\" />
+    <Folder Include="wwwroot\assets\img\picture\" />
+    <Folder Include="wwwroot\assets\img\poster\" />
+    <Folder Include="wwwroot\assets\img\photo\" />
   </ItemGroup>
 
 </Project>

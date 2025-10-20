@@ -1,0 +1,47 @@
+﻿@model IEnumerable<Category>
+
+@{
+    ViewData["Title"] = "Movie Categories";
+}
+<div class="my-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="m-0"><i class="bi bi-film"></i> Movie Categories</h2>
+        <a asp-area="Admin" asp-controller="Category" asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Add New Category
+        </a>
+    </div>
+    <div class="table-responsive scrollbar">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Description</th>
+                    <th class="text-end" scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var category in Model)
+                {
+                    <tr>
+                        <td>@category.Name</td>
+                        <td>@category.Description</td>
+                        <td class="text-end">
+                            <div>
+                                <div>
+                                    <a href="/Admin/Category/Edit/@category.Id" class="btn btn-link p-0" data-bs-toggle="tooltip" title="Edit">
+                                        <span class="text-500 fas fa-edit"></span>
+                                    </a>
+
+                                    <a href="/Admin/Category/Delete/@category.Id" class="btn btn-link p-0 ms-2" data-bs-toggle="tooltip" title="Delete">
+                                        <span class="text-500 fas fa-trash-alt"></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+</div>

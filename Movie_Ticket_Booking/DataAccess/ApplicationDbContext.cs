@@ -1,13 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Movie_Ticket_Booking.Models;
 
 namespace Movie_Ticket_Booking.DataAccess
 {
     public class ApplicationDbContext : DbContext
     {
-        public DbSet<Models.Cinema> Cinemas { get; set; } = null!;
-        public DbSet<Models.Movie> Movies { get; set; } = null!;
-        public DbSet<Models.Category> Categories { get; set; } = null!;
-        public DbSet<Models.Actor> Actors { get; set; } = null!;
+        public DbSet<Cinema> Cinemas { get; set; } = null!;
+        public DbSet<Movie> Movies { get; set; } = null!;
+        public DbSet<Category> Categories { get; set; } = null!;
+        public DbSet<Actor> Actors { get; set; } = null!;
+        public DbSet<MovieSubImage> MovieSubImages { get; set; } = null!;
+        public DbSet<MovieActor> MovieActors { get; set; } = null!;
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -16,20 +20,11 @@ namespace Movie_Ticket_Booking.DataAccess
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
-            // Configure many-to-many relationship between Movies and Actors
-            modelBuilder.Entity<Models.Movie>()
-                .HasMany(m => m.Actors)
-                .WithMany(a => a.Movies)
-                .UsingEntity<Dictionary<string, object>>(
-                    "MovieActor",
-                    j => j.HasOne<Models.Actor>().WithMany().HasForeignKey("ActorId"),
-                    j => j.HasOne<Models.Movie>().WithMany().HasForeignKey("MovieId"),
-                    j =>
-                    {
-                        j.HasKey("MovieId", "ActorId");
-                        j.ToTable("MovieActors");
-                    });
+            //base.OnModelCreating(modelBuilder);
+            //modelBuilder.Entity<Movie>()
+            //.HasMany(m => m.Actors)
+            //.WithMany(a => a.Movies)
+            //.UsingEntity(j => j.ToTable("MovieActors"));
         }
     }
 }

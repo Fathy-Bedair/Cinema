@@ -1,0 +1,144 @@
+﻿@using Movie_Ticket_Booking.ViewModels
+@model MovieVM
+
+@{
+    ViewData["Title"] = "Create Movie";
+}
+
+<div class="container my-4">
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <h3 class="mb-4"><i class="bi bi-plus-circle"></i> Add New Movie</h3>
+
+            <form asp-action="Create" asp-controller="Movie" asp-area="Admin" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Movie.Title" class="form-label"></label>
+                    <input asp-for="Movie.Title" class="form-control" />
+                    <span asp-validation-for="Movie.Title" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Movie.CategoryId" class="form-label"></label>
+                    <select asp-for="Movie.CategoryId" class="form-select">
+                        <option value="">-- Select Category --</option>
+                        @foreach (var cat in Model.Categories)
+                        {
+                            <option value="@cat.Id">@cat.Name</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Movie.CategoryId" class="text-danger"></span>
+
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Movie.Description" class="form-label"></label>
+                    <input asp-for="Movie.Description" class="form-control" />
+                    <span asp-validation-for="Movie.Description" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Movie.PosterURL" class="form-label">Upload poster</label>
+                    <input asp-for="Movie.PosterURL" class="form-control" type="file" name="poster" placeholder=" Choose poster" />
+                </div>
+                <div class="mb-3">
+                    <label for="img" class="form-label">Sub Images</label>
+                    <input class="form-control" type="file" name="subImgs" multiple>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Movie.CinemaId" class="form-label"></label>
+                    <select asp-for="Movie.CinemaId" class="form-select">
+                        <option value="">-- Select Cinema --</option>
+                        @foreach (var cin in Model.Cinemas)
+                        {
+                            <option value="@cin.Id">@cin.Name</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Movie.CinemaId" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for ="Movie.InCinema" class="form-label">In Cinema ?</label>
+                    <select asp-for="Movie.InCinema" class="form-select">
+                        <option value="true" selected>Yes</option>
+                        <option value="false">No</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Movie.ReleaseDate" class="form-label">Release Date</label>
+                    <input asp-for="Movie.ReleaseDate" placeholder=" Enter a Release Date" class="form-control">
+
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Movie.Price" class="form-label">Price</label>
+                    <input asp-for="Movie.Price" class="form-control">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Actors</label>
+                    <div id="actorContainer">
+                        <div class="mb-2 d-flex align-items-center">
+                            <select class="form-select me-2" name="Actors">
+                                <option value="">-- Select Actor --</option>
+                                @foreach (var act in Model.Actors)
+                                {
+                                    <option value="@act.Id">@act.Name</option>
+                                }
+                            </select>
+                            <button type="button" class="btn btn-danger btn-sm removeActor">X</button>
+                        </div>
+                    </div>
+                    <button type="button" id="addButtonActor" class="btn btn-outline-primary mt-2">+ Add Actor</button>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Create</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+
+        const actorsOptionsHtml = `
+            @foreach (var act in Model.Actors)
+            {
+                    <text><option value="@act.Id">@act.Name</option></text>
+            }
+        `;
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const container = document.getElementById('actorContainer');
+            const addBtn = document.getElementById('addButtonActor');
+
+            addBtn.addEventListener('click', () => {
+                const actorRow = document.createElement('div');
+                actorRow.className = 'mb-2 d-flex align-items-center';
+
+                actorRow.innerHTML = `
+                    <select class="form-select me-2" name="Actors">
+                        <option value="">-- Select Actor --</option>
+                        ${actorsOptionsHtml}
+                    </select>
+                    <button type="button" class="btn btn-danger btn-sm removeActor">X</button>
+                `;
+
+                container.appendChild(actorRow);
+            });
+
+            container.addEventListener('click', (e) => {
+                if (e.target.classList.contains('removeActor')) {
+                    e.target.parentElement.remove();
+                }
+            });
+        });
+    </script>
+}
+

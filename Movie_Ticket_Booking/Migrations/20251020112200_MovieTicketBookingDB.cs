@@ -17,8 +17,8 @@ namespace Movie_Ticket_Booking.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Bio = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    Bio = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     ProfilePictureURL = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -32,8 +32,8 @@ namespace Movie_Ticket_Booking.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -46,9 +46,9 @@ namespace Movie_Ticket_Booking.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     Logo = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -61,11 +61,10 @@ namespace Movie_Ticket_Booking.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     ReleaseDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PosterURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SubImages = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PosterURL = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Price = table.Column<double>(type: "float", nullable: false),
                     InCinema = table.Column<bool>(type: "bit", nullable: false),
                     CinemaId = table.Column<int>(type: "int", nullable: false),
@@ -112,6 +111,24 @@ namespace Movie_Ticket_Booking.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "MovieSubImage",
+                columns: table => new
+                {
+                    MovieId = table.Column<int>(type: "int", nullable: false),
+                    Img = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MovieSubImage", x => new { x.MovieId, x.Img });
+                    table.ForeignKey(
+                        name: "FK_MovieSubImage_Movies_MovieId",
+                        column: x => x.MovieId,
+                        principalTable: "Movies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_MovieActors_ActorId",
                 table: "MovieActors",
@@ -133,6 +150,9 @@ namespace Movie_Ticket_Booking.Migrations
         {
             migrationBuilder.DropTable(
                 name: "MovieActors");
+
+            migrationBuilder.DropTable(
+                name: "MovieSubImage");
 
             migrationBuilder.DropTable(
                 name: "Actors");
