@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Movie>
+﻿@model IEnumerable<Movie_Ticket_Booking.Models.Movie>
 
 @{
     ViewData["Title"] = "Movie";
@@ -31,11 +31,11 @@
                     <tr>
                         <td>@movie.Title</td>
                         <td>@movie.Category.Name</td>
+                        <td>@movie.Cinema.Name</td>
                         <td>@movie.Description</td>
                         <td>
                             <img src="@movie.PosterURL" height="80" style="object-fit: cover; border-radius: 10px;" />
                         </td>
-                        <td>@movie.Cinema.Name</td>
                         <td>@(movie.InCinema ? "Yes" : "No")</td>
                         <td>@movie.ReleaseDate.ToString("yyyy-MM-dd")</td>
                         <td>$@movie.Price.ToString("F2")</td>

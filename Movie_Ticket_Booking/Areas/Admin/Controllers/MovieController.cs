@@ -13,7 +13,7 @@ namespace Movie_Ticket_Booking.Areas.Admin.Controllers
         ApplicationDbContext context = new();
         public IActionResult Index()
         {
-            var movies = context.Movies.ToList();
+            var movies = context.Movies.Include(m => m.Category).Include(m => m.Cinema).ToList();
             return View(movies);
         }
 

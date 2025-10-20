@@ -7,6 +7,7 @@ namespace Movie_Ticket_Booking.ViewModels
         public IEnumerable<Category> Categories { get; set; }= new List<Category>();
         public IEnumerable<Cinema> Cinemas { get; set; } = new List<Cinema>();
         public IEnumerable<Actor> Actors { get; set; } = new List<Actor>();
+        public IEnumerable<Movie> Movies { get; set; } = new List<Movie>();
         public Movie Movie { get; set; }= new Movie();
 
 
