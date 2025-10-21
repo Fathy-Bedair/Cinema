@@ -1,0 +1,177 @@
+﻿@using Movie_Ticket_Booking.ViewModels
+@model MovieVM
+
+@{
+    ViewData["Title"] = "Edit Movie";
+}
+
+<div class="container my-4">
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <h3 class="mb-4"><i class="bi bi-pencil-square"></i> Edit Movie</h3>
+
+            <form asp-action="Edit" asp-controller="Movie" asp-area="Admin" method="post" enctype="multipart/form-data">
+                <input type="hidden" asp-for="Movie.Id" />
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Movie.Title" class="form-label"></label>
+                    <input asp-for="Movie.Title" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Movie.CategoryId" class="form-label"></label>
+                    <select asp-for="Movie.CategoryId" class="form-select">
+                        @foreach (var cat in Model.Categories)
+                        {
+                            <option value="@cat.Id" selected="@(cat.Id == Model.Movie.CategoryId)">
+                                @cat.Name
+                            </option>
+                        }
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Movie.Description" class="form-label"></label>
+                    <textarea asp-for="Movie.Description" class="form-control"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Current Poster</label><br />
+                    <img src="@Model.Movie.PosterURL" width="120" style="border-radius:10px;" />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Movie.PosterURL" class="form-label">Change Poster</label>
+                    <input class="form-control" type="file" name="poster" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Add Sub Images</label>
+                    <input class="form-control" type="file" name="subImgs" multiple />
+                    @if (Model.Movie.MovieSubImages?.Count > 0)
+                    {
+                        <div class="mt-2">
+                            <label class="form-label">Current Sub Images:</label>
+                            <div class="d-flex flex-wrap gap-2">
+                                @foreach (var img in Model.Movie.MovieSubImages)
+                                {
+                                    <img src="@img.Img" width="80" style="border-radius:8px;" />
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Movie.CinemaId" class="form-label"></label>
+                    <select asp-for="Movie.CinemaId" class="form-select">
+                        @foreach (var cin in Model.Cinemas)
+                        {
+                            <option value="@cin.Id" selected="@(cin.Id == Model.Movie.CinemaId)">
+                                @cin.Name
+                            </option>
+                        }
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Movie.InCinema" class="form-label">In Cinema?</label>
+                    <select asp-for="Movie.InCinema" class="form-select">
+                        <option value="true" selected="@Model.Movie.InCinema">Yes</option>
+                        <option value="false" selected="@(!Model.Movie.InCinema)">No</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Movie.ReleaseDate" class="form-label">Release Date</label>
+                    <input asp-for="Movie.ReleaseDate" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Movie.Price" class="form-label">Price</label>
+                    <input asp-for="Movie.Price" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Actors</label>
+                    <div id="actorContainer">
+                        @if (Model.Movie.Actors != null && Model.Movie.Actors.Any())
+                        {
+                            foreach (var actorInMovie in Model.Movie.Actors)
+                            {
+                                <div class="mb-2 d-flex align-items-center">
+                                    <select class="form-select me-2" name="Actors">
+                                        <option value="">-- Select Actor --</option>
+                                        @foreach (var actor in Model.Actors)
+                                        {
+                                            <option value="@actor.Id" selected="@(actor.Id == actorInMovie.Id)">
+                                                @actor.Name
+                                            </option>
+                                        }
+                                    </select>
+                                    <button type="button" class="btn btn-danger btn-sm removeActor">X</button>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="mb-2 d-flex align-items-center">
+                                <select class="form-select me-2" name="Actors">
+                                    <option value="">-- Select Actor --</option>
+                                    @foreach (var actor in Model.Actors)
+                                    {
+                                        <option value="@actor.Id">@actor.Name</option>
+                                    }
+                                </select>
+                                <button type="button" class="btn btn-danger btn-sm removeActor">X</button>
+                            </div>
+                        }
+                    </div>
+                    <button type="button" id="addButtonActor" class="btn btn-outline-primary mt-2">+ Add Actor</button>
+                </div>
+
+                <button type="submit" class="btn btn-success">Save Changes</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        const actorsOptionsHtml = `
+            @foreach (var act in Model.Actors)
+            {
+                    <text><option value="@act.Id">@act.Name</option></text>
+            }
+        `;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('actorContainer');
+            const addBtn = document.getElementById('addButtonActor');
+
+            addBtn.addEventListener('click', () => {
+                const actorRow = document.createElement('div');
+                actorRow.className = 'mb-2 d-flex align-items-center';
+
+                actorRow.innerHTML = `
+                    <select class="form-select me-2" name="Actors">
+                        <option value="">-- Select Actor --</option>
+                        ${actorsOptionsHtml}
+                    </select>
+                    <button type="button" class="btn btn-danger btn-sm removeActor">X</button>
+                `;
+
+                container.appendChild(actorRow);
+            });
+
+            container.addEventListener('click', (e) => {
+                if (e.target.classList.contains('removeActor')) {
+                    e.target.parentElement.remove();
+                }
+            });
+        });
+    </script>
+}

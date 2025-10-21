@@ -23,6 +23,7 @@ namespace Movie_Ticket_Booking
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseStaticFiles();
 
             app.MapStaticAssets();
             app.MapControllerRoute(
