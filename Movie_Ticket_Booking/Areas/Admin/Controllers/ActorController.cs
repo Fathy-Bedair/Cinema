@@ -2,6 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using Movie_Ticket_Booking.DataAccess;
 using Movie_Ticket_Booking.Models;
+using Movie_Ticket_Booking.Repositories;
+using Movie_Ticket_Booking.Repositories.IRepositories;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Movie_Ticket_Booking.Areas.Admin.Controllers
@@ -10,11 +13,17 @@ namespace Movie_Ticket_Booking.Areas.Admin.Controllers
 
     public class ActorController : Controller
     {
-        ApplicationDbContext Context = new();
+        private readonly IRepository<Actor> _actorRepository;
 
-        public IActionResult Index()
+        public ActorController(IRepository<Actor> actorRepository)
         {
-            var actors = Context.Actors.ToList();
+            _actorRepository = actorRepository;
+        }
+
+        public async Task<IActionResult> Index(CancellationToken cancellationToken)
+        {
+            var actors = await _actorRepository.GetAsync(tracked: false, cancellationToken: cancellationToken);
+
             return View(actors);
         }
 
@@ -25,7 +34,7 @@ namespace Movie_Ticket_Booking.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Actor actor, IFormFile photo)
+        public async Task<IActionResult> Create(Actor actor, IFormFile photo, CancellationToken cancellationToken)
         {
             if (photo is not null)
             {
@@ -42,16 +51,17 @@ namespace Movie_Ticket_Booking.Areas.Admin.Controllers
 
             if (ModelState.IsValid)
             {
-                Context.Actors.Add(actor);
-                Context.SaveChanges();
+                await _actorRepository.AddAsync(actor, cancellationToken);
+                await _actorRepository.CommitAsync(cancellationToken);
                 return RedirectToAction(nameof(Index));
             }
             return View(actor);
         }
 
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id, CancellationToken cancellationToken)
         {
-            var actor = Context.Actors.FirstOrDefault(x => x.Id == id);
+            var actor = await _actorRepository.GetOneAsync(e => e.Id == id, cancellationToken: cancellationToken);
+
             if (actor is null)
             {
                 return NotFound();
@@ -59,9 +69,10 @@ namespace Movie_Ticket_Booking.Areas.Admin.Controllers
             return View(actor);
         }
         [HttpPost]
-        public IActionResult Edit(Actor actor, IFormFile? photo)
+        public async Task<IActionResult> Edit(Actor actor, IFormFile? photo, CancellationToken cancellationToken)
         {
-            var existingActor = Context.Actors.FirstOrDefault(x => x.Id == actor.Id);
+            var existingActor = await _actorRepository.GetOneAsync(e => e.Id == actor.Id, cancellationToken: cancellationToken);
+
             if (existingActor is null)
                 return NotFound();
 
@@ -91,19 +102,20 @@ namespace Movie_Ticket_Booking.Areas.Admin.Controllers
                 existingActor.Name = actor.Name;
                 existingActor.Bio = actor.Bio;
 
-                Context.SaveChanges();
+                await _actorRepository.CommitAsync(cancellationToken);
                 return RedirectToAction(nameof(Index));
             }
             return View(actor);
         }
 
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id,CancellationToken cancellationToken)
         {
-            var actor = Context.Actors.FirstOrDefault(x => x.Id == id);
+            var actor = await _actorRepository.GetOneAsync(e => e.Id == id, cancellationToken: cancellationToken);
+
             if (actor is not null)
             {
-                Context.Actors.Remove(actor);
-                Context.SaveChanges();
+                _actorRepository.Delete(actor);
+                await _actorRepository.CommitAsync(cancellationToken);
             }
             return RedirectToAction(nameof(Index));
         }

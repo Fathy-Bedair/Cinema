@@ -1,3 +1,8 @@
+using Movie_Ticket_Booking.DataAccess;
+using Movie_Ticket_Booking.Models;
+using Movie_Ticket_Booking.Repositories;
+using Movie_Ticket_Booking.Repositories.IRepositories;
+
 namespace Movie_Ticket_Booking
 {
     public class Program
@@ -8,6 +13,14 @@ namespace Movie_Ticket_Booking
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddDbContext<ApplicationDbContext>();
+            builder.Services.AddScoped<IRepository<Category>, Repository<Category>>();
+            builder.Services.AddScoped<IRepository<Actor>, Repository<Actor>>();
+            builder.Services.AddScoped<IRepository<Cinema>, Repository<Cinema>>();
+            builder.Services.AddScoped<IRepository<Movie>, Repository<Movie>>();
+            builder.Services.AddScoped<IRepository<MovieActor>, Repository<MovieActor>>();
+            builder.Services.AddScoped<IMovieRepository, MovieRepository>();
+            builder.Services.AddScoped<IMovieSubImageRepository, MovieSubImageRepository>();
 
             var app = builder.Build();
 

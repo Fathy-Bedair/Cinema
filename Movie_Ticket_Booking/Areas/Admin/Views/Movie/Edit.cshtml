@@ -97,16 +97,16 @@
                 <div class="mb-3">
                     <label class="form-label">Actors</label>
                     <div id="actorContainer">
-                        @if (Model.Movie.Actors != null && Model.Movie.Actors.Any())
+                        @if (Model.MovieActors != null && Model.MovieActors.Any())
                         {
-                            foreach (var actorInMovie in Model.Movie.Actors)
+                            foreach (var movieActor in Model.MovieActors)
                             {
                                 <div class="mb-2 d-flex align-items-center">
                                     <select class="form-select me-2" name="Actors">
                                         <option value="">-- Select Actor --</option>
                                         @foreach (var actor in Model.Actors)
                                         {
-                                            <option value="@actor.Id" selected="@(actor.Id == actorInMovie.Id)">
+                                            <option value="@actor.Id" selected="@(actor.Id == movieActor.ActorId)">
                                                 @actor.Name
                                             </option>
                                         }
@@ -141,13 +141,6 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        const actorsOptionsHtml = `
-            @foreach (var act in Model.Actors)
-            {
-                    <text><option value="@act.Id">@act.Name</option></text>
-            }
-        `;
-
         document.addEventListener('DOMContentLoaded', () => {
             const container = document.getElementById('actorContainer');
             const addBtn = document.getElementById('addButtonActor');
@@ -159,7 +152,10 @@
                 actorRow.innerHTML = `
                     <select class="form-select me-2" name="Actors">
                         <option value="">-- Select Actor --</option>
-                        ${actorsOptionsHtml}
+                        @foreach (var actor in Model.Actors)
+                        {
+                                <option value="@actor.Id">@actor.Name</option>
+                        }
                     </select>
                     <button type="button" class="btn btn-danger btn-sm removeActor">X</button>
                 `;

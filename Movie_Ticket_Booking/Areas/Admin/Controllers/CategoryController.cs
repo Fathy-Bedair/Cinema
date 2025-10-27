@@ -2,39 +2,52 @@
 using Microsoft.EntityFrameworkCore;
 using Movie_Ticket_Booking.DataAccess;
 using Movie_Ticket_Booking.Models;
+using Movie_Ticket_Booking.Repositories;
+using Movie_Ticket_Booking.Repositories.IRepositories;
 
 namespace Movie_Ticket_Booking.Areas.Admin.Controllers
 {
     [Area(areaName: "Admin")]
     public class CategoryController : Controller
     {
-        ApplicationDbContext Context = new();
-        public IActionResult Index()
+        private readonly IRepository<Category> _categoryRepository;
+
+        public CategoryController(IRepository<Category> categoryRepository)
         {
-            var categories = Context.Categories.ToList();
+            _categoryRepository = categoryRepository;
+        }
+
+        public async Task<IActionResult> Index(CancellationToken cancellationToken)
+
+        {
+            var categories = await _categoryRepository.GetAsync(tracked: false, cancellationToken: cancellationToken);
+
             return View(categories);
         }
 
         public IActionResult Create()
         {
+
+
             return View(new Category());
         }
 
         [HttpPost]
-        public IActionResult Create(Category category)
+        public async Task<IActionResult> Create(Category category, CancellationToken cancellationToken)
+
         {
             if (ModelState.IsValid)
             {
-                Context.Categories.Add(category);
-                Context.SaveChanges();
+                await _categoryRepository.AddAsync(category, cancellationToken);
+                await _categoryRepository.CommitAsync(cancellationToken);
                 return RedirectToAction(nameof(Index));
             }
             return View(category);
         }
 
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id , CancellationToken cancellationToken)
         {
-            var category = Context.Categories.FirstOrDefault(x => x.Id == id);
+            var category = await _categoryRepository.GetOneAsync(e => e.Id == id, cancellationToken: cancellationToken);
 
             if (category is null)
                 return NotFound();
@@ -44,9 +57,9 @@ namespace Movie_Ticket_Booking.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(Category category)
+        public async Task<IActionResult> Edit(Category category, CancellationToken cancellationToken)
         {
-            var existingCategory = Context.Categories.FirstOrDefault(x => x.Id == category.Id);
+            var existingCategory = await _categoryRepository.GetOneAsync(e => e.Id == category.Id, cancellationToken: cancellationToken);
 
             if (existingCategory is null)
                 return NotFound();
@@ -54,20 +67,21 @@ namespace Movie_Ticket_Booking.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 existingCategory.Name = category.Name;
-                existingCategory.Description = category.Description; 
-                Context.SaveChanges();
+                existingCategory.Description = category.Description;
+                await _categoryRepository.CommitAsync(cancellationToken);
                 return RedirectToAction(nameof(Index));
             }
             return View(category);
         }
 
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
         {
-            var category = Context.Categories.FirstOrDefault(x => x.Id == id);
+            var category = await _categoryRepository.GetOneAsync(e => e.Id == id, cancellationToken: cancellationToken);
+
             if (category is not null)
-            {
-                Context.Categories.Remove(category);
-                Context.SaveChanges();
+            { 
+                _categoryRepository.Delete(category);
+                await _categoryRepository.CommitAsync(cancellationToken);
             }
             return RedirectToAction(nameof(Index));
         }

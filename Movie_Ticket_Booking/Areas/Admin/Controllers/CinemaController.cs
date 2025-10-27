@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Movie_Ticket_Booking.DataAccess;
 using Movie_Ticket_Booking.Models;
+using Movie_Ticket_Booking.Repositories;
+using Movie_Ticket_Booking.Repositories.IRepositories;
+using System.Threading;
 
 namespace Movie_Ticket_Booking.Areas.Admin.Controllers
 {
@@ -8,21 +11,31 @@ namespace Movie_Ticket_Booking.Areas.Admin.Controllers
 
     public class CinemaController : Controller
     {
-        ApplicationDbContext Context = new();
 
-        public IActionResult Index()
+        private readonly IRepository<Cinema> _cinemaRepository;
+
+        public CinemaController(IRepository<Cinema> cinemaRepository)
         {
-            var cinemas = Context.Cinemas.ToList();
+            _cinemaRepository = cinemaRepository;
+        }
+
+        public async Task<IActionResult> Index(CancellationToken cancellationToken)
+
+        {
+            var cinemas = await _cinemaRepository.GetAsync(tracked: false, cancellationToken: cancellationToken);
+
             return View(cinemas);
         }
 
         public IActionResult Create()
         {
+
             return View(new Cinema());
         }
 
         [HttpPost]
-        public IActionResult Create(Cinema cinema, IFormFile logo)
+        public async Task<IActionResult> Create(Cinema cinema, IFormFile logo, CancellationToken cancellationToken)
+
         {
             if (logo is not null)
             {
@@ -37,16 +50,19 @@ namespace Movie_Ticket_Booking.Areas.Admin.Controllers
 
             if (ModelState.IsValid)
             {
-                Context.Cinemas.Add(cinema);
-                Context.SaveChanges();
+                await _cinemaRepository.AddAsync(cinema, cancellationToken);
+                await _cinemaRepository.CommitAsync(cancellationToken);
                 return RedirectToAction(nameof(Index));
             }
             return View(cinema);
         }
 
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id, CancellationToken cancellationToken)
         {
-            var cinema = Context.Cinemas.FirstOrDefault(x => x.Id == id);
+
+            var cinema = await _cinemaRepository.GetOneAsync(e => e.Id == id, cancellationToken: cancellationToken);
+
+
             if (cinema is null)
             {
                 return NotFound();
@@ -55,9 +71,10 @@ namespace Movie_Ticket_Booking.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(Cinema cinema, IFormFile? logo)
+        public async Task<IActionResult> Edit(Cinema cinema, IFormFile? logo, CancellationToken cancellationToken)
         {
-            var existingCinema = Context.Cinemas.FirstOrDefault(x => x.Id == cinema.Id);
+            var existingCinema = await _cinemaRepository.GetOneAsync(e => e.Id == cinema.Id, cancellationToken: cancellationToken);
+
             if (existingCinema is null)
                 return NotFound();
 
@@ -86,19 +103,20 @@ namespace Movie_Ticket_Booking.Areas.Admin.Controllers
                 existingCinema.Name = cinema.Name;
                 existingCinema.Description = cinema.Description;
 
-                Context.SaveChanges();
+                await _cinemaRepository.CommitAsync(cancellationToken);
                 return RedirectToAction(nameof(Index));
             }
             return View(cinema);
         }
 
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
         {
-            var cinema = Context.Cinemas.FirstOrDefault(x => x.Id == id);
+            var cinema = await _cinemaRepository.GetOneAsync(e => e.Id == id, cancellationToken: cancellationToken);
+
             if (cinema is not null)
             {
-                Context.Cinemas.Remove(cinema);
-                Context.SaveChanges();
+                _cinemaRepository.Delete(cinema);
+                await _cinemaRepository.CommitAsync(cancellationToken);
             }
             return RedirectToAction(nameof(Index));
         }
