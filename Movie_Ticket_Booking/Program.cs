@@ -1,7 +1,11 @@
+using ECommerce;
+using Microsoft.EntityFrameworkCore;
+using Movie_Ticket_Booking.Configurations;
 using Movie_Ticket_Booking.DataAccess;
 using Movie_Ticket_Booking.Models;
 using Movie_Ticket_Booking.Repositories;
 using Movie_Ticket_Booking.Repositories.IRepositories;
+using Movie_Ticket_Booking.Utitlies.DBInitilizer;
 
 namespace Movie_Ticket_Booking
 {
@@ -13,16 +17,20 @@ namespace Movie_Ticket_Booking
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-            builder.Services.AddDbContext<ApplicationDbContext>();
-            builder.Services.AddScoped<IRepository<Category>, Repository<Category>>();
-            builder.Services.AddScoped<IRepository<Actor>, Repository<Actor>>();
-            builder.Services.AddScoped<IRepository<Cinema>, Repository<Cinema>>();
-            builder.Services.AddScoped<IRepository<Movie>, Repository<Movie>>();
-            builder.Services.AddScoped<IRepository<MovieActor>, Repository<MovieActor>>();
-            builder.Services.AddScoped<IMovieRepository, MovieRepository>();
-            builder.Services.AddScoped<IMovieSubImageRepository, MovieSubImageRepository>();
+
+            var connectionString =
+    builder.Configuration.GetConnectionString("DefaultConnection")
+        ?? throw new InvalidOperationException("Connection string"
+        + "'DefaultConnection' not found.");
+
+            builder.Services.RegisterConfig(connectionString);
+            builder.Services.RegisterMapsterConfig();
 
             var app = builder.Build();
+
+            var scope = app.Services.CreateScope();
+            var service = scope.ServiceProvider.GetService<IDBInitializer>();
+            service!.Initialize();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
@@ -41,7 +49,7 @@ namespace Movie_Ticket_Booking
             app.MapStaticAssets();
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{area=Admin}/{controller=Home}/{action=Index}/{id?}")
+                pattern: "{area=Customer}/{controller=Movies}/{action=Index}/{id?}")
                 .WithStaticAssets();
 
             app.Run();

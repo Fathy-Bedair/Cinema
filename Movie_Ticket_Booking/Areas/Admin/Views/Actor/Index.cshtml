@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Actor>
+﻿@using Movie_Ticket_Booking.Utitlies
+@model IEnumerable<Actor>
 
 @{
     ViewData["Title"] = "Movie Actors";
@@ -21,6 +22,9 @@
                 </tr>
             </thead>
             <tbody>
+            <tbody>
+            <tbody>
+            <tbody>
                 @foreach (var actor in Model)
                 {
                     <tr>
@@ -30,17 +34,19 @@
                             <img src="@actor.ProfilePictureURL" height="80" style="object-fit: cover; border-radius: 10px;" />
                         </td>
                         <td class="text-end">
-                            <div>
-                                <div>
-                                    <a href="/Admin/Actor/Edit/@actor.Id" class="btn btn-link p-0" data-bs-toggle="tooltip" title="Edit">
-                                        <span class="text-500 fas fa-edit"></span>
-                                    </a>
-
-                                    <a href="/Admin/Actor/Delete/@actor.Id" class="btn btn-link p-0 ms-2" data-bs-toggle="tooltip" title="Delete">
-                                        <span class="text-500 fas fa-trash-alt"></span>
-                                    </a>
-                                </div>
-                            </div>
+                            @if (User.IsInRole(SD.SUPER_ADMIN_ROLE) || User.IsInRole(SD.ADMIN_ROLE))
+                            {
+                                <a href="/Admin/Movie/Edit/@actor.Id" class="btn btn-link p-0" data-bs-toggle="tooltip" title="Edit">
+                                    <span class="text-500 fas fa-edit"></span>
+                                </a>
+                                <a href="/Admin/Movie/Delete/@actor.Id" class="btn btn-link p-0 ms-2" data-bs-toggle="tooltip" title="Delete">
+                                    <span class="text-500 fas fa-trash-alt"></span>
+                                </a>
+                            }
+                            else
+                            {
+                                <span class="text-muted">No Actions!</span>
+                            }
                         </td>
                     </tr>
                 }

@@ -1,0 +1,45 @@
+﻿@model Movie_Ticket_Booking.ViewModels.ValidateOTPVM
+@{
+    ViewData["Title"] = "Validate OTP";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow border-0">
+                <div class="card-body p-4">
+                    <h3 class="text-center mb-4">Validate OTP</h3> <form asp-action="ValidateOTP" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="OTP" class="form-label"></label> <input asp-for="OTP" class="form-control" placeholder="Enter your OTP code" />
+                            <span asp-validation-for="OTP" class="text-danger"></span>
+                        </div>
+
+                        <input type="hidden" asp-for="ApplicationUserId" />
+
+                        <button type="submit" class="btn btn-primary w-100 py-2">Verify</button>
+                    </form>
+
+                    <div class="position-relative mt-4">
+                        <hr class="text-muted" />
+                        <div class="divider-content-center text-muted fw-semibold">
+                            Didn't receive the code?
+                        </div>
+                    </div>
+
+                    <div class="mt-2">
+                        <a asp-action="ResendOTP" asp-route-userId="@Model.ApplicationUserId"
+                           class="btn btn-outline-primary d-block w-100">
+                            <i class="bi bi-envelope-paper me-1"></i> Resend OTP
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

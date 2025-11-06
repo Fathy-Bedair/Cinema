@@ -1,0 +1,96 @@
+﻿@model Movie_Ticket_Booking.ViewModels.RegisterVM
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow border-0">
+                <div class="card-body p-4">
+                    <h3 class="mb-3">Register</h3>
+
+                    <form asp-action="Register" method="post" novalidate>
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                        <div class="row gx-2">
+                            <div class="col-sm-6 mb-3">
+                                <label asp-for="FirstName" class="form-label"></label>
+                                <input asp-for="FirstName" class="form-control" placeholder="First Name" />
+                                <span asp-validation-for="FirstName" class="text-danger"></span>
+                            </div>
+                            <div class="col-sm-6 mb-3">
+                                <label asp-for="LastName" class="form-label"></label>
+                                <input asp-for="LastName" class="form-control" placeholder="Last Name" />
+                                <span asp-validation-for="LastName" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="UserName" class="form-label"></label>
+                            <input asp-for="UserName" class="form-control" placeholder="Username" />
+                            <span asp-validation-for="UserName" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" class="form-control" placeholder="Email address" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="row gx-2">
+                            <div class="col-sm-6 mb-3">
+                                <label asp-for="Password" class="form-label"></label>
+                                <input asp-for="Password" class="form-control" placeholder="Password" />
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+                            <div class="col-sm-6 mb-3">
+                                <label asp-for="ConfirmPassword" class="form-label"></label>
+                                <input asp-for="ConfirmPassword" class="form-control" placeholder="Confirm Password" />
+                                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary d-block w-100">Register</button>
+                    </form>
+
+                    <div class="position-relative mt-4">
+                        <hr />
+                        <div class="divider-content-center">or register with</div>
+                    </div>
+
+                    <div class="row g-2 mt-2">
+                        <div class="col-sm-6">
+                            <a class="btn btn-outline-google-plus d-block w-100" href="#">
+                                <span class="fab fa-google-plus-g me-2" data-fa-transform="grow-8"></span> Google
+                            </a>
+                        </div>
+                        <div class="col-sm-6">
+                            <a class="btn btn-outline-facebook d-block w-100" href="#">
+                                <span class="fab fa-facebook-square me-2" data-fa-transform="grow-8"></span> Facebook
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="position-relative mt-4">
+                        <hr class="text-muted" />
+                        <div class="divider-content-center text-muted fw-semibold">
+                            Have an account?
+                        </div>
+                    </div>
+
+                    <div class="mt-2">
+                        <a class="btn btn-outline-primary d-block w-100" asp-action="Login">
+                            <i class="bi bi-box-arrow-in-right me-1"></i> Log In
+                        </a>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

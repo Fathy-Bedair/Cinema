@@ -6,7 +6,11 @@ namespace Movie_Ticket_Booking.Repositories
 {
     public class MovieRepository : Repository<Movie> , IMovieRepository
     {
-        private ApplicationDbContext _context = new();
+        private ApplicationDbContext _context ;
+        public MovieRepository(ApplicationDbContext context) : base(context)
+        {
+            _context = context;
+        }
 
         public async Task AddRangeAsync(IEnumerable<Movie> movies, CancellationToken cancellationToken = default)
         {

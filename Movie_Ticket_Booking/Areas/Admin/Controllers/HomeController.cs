@@ -1,10 +1,13 @@
-using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Movie_Ticket_Booking.Models;
+using Movie_Ticket_Booking.Utitlies;
+using System.Diagnostics;
 
 namespace Movie_Ticket_Booking.Areas.Admin.Controllers
 {
     [Area("Admin")]
+
 
     public class HomeController : Controller
     {

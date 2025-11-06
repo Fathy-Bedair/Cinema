@@ -1,13 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Movie_Ticket_Booking.DataAccess;
 using Movie_Ticket_Booking.Models;
 using Movie_Ticket_Booking.Repositories;
 using Movie_Ticket_Booking.Repositories.IRepositories;
+using Movie_Ticket_Booking.Utitlies;
 
 namespace Movie_Ticket_Booking.Areas.Admin.Controllers
 {
     [Area(areaName: "Admin")]
+    [Authorize(Roles = $"{SD.SUPER_ADMIN_ROLE},{SD.ADMIN_ROLE},{SD.EMPLOYEE_ROLE}")]
+
     public class CategoryController : Controller
     {
         private readonly IRepository<Category> _categoryRepository;
@@ -15,14 +19,6 @@ namespace Movie_Ticket_Booking.Areas.Admin.Controllers
         public CategoryController(IRepository<Category> categoryRepository)
         {
             _categoryRepository = categoryRepository;
-        }
-
-        public async Task<IActionResult> Index(CancellationToken cancellationToken)
-
-        {
-            var categories = await _categoryRepository.GetAsync(tracked: false, cancellationToken: cancellationToken);
-
-            return View(categories);
         }
 
         public IActionResult Create()
@@ -44,8 +40,22 @@ namespace Movie_Ticket_Booking.Areas.Admin.Controllers
             }
             return View(category);
         }
+        
+        [Authorize(Roles = $"{SD.SUPER_ADMIN_ROLE},{SD.ADMIN_ROLE}")]
+        public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
+        {
+            var category = await _categoryRepository.GetOneAsync(e => e.Id == id, cancellationToken: cancellationToken);
 
-        public async Task<IActionResult> Edit(int id , CancellationToken cancellationToken)
+            if (category is not null)
+            {
+                _categoryRepository.Delete(category);
+                await _categoryRepository.CommitAsync(cancellationToken);
+            }
+            return RedirectToAction(nameof(Index));
+        }
+        
+        [Authorize(Roles = $"{SD.SUPER_ADMIN_ROLE},{SD.ADMIN_ROLE}")]
+        public async Task<IActionResult> Edit(int id, CancellationToken cancellationToken)
         {
             var category = await _categoryRepository.GetOneAsync(e => e.Id == id, cancellationToken: cancellationToken);
 
@@ -57,6 +67,7 @@ namespace Movie_Ticket_Booking.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = $"{SD.SUPER_ADMIN_ROLE},{SD.ADMIN_ROLE}")]
         public async Task<IActionResult> Edit(Category category, CancellationToken cancellationToken)
         {
             var existingCategory = await _categoryRepository.GetOneAsync(e => e.Id == category.Id, cancellationToken: cancellationToken);
@@ -74,19 +85,12 @@ namespace Movie_Ticket_Booking.Areas.Admin.Controllers
             return View(category);
         }
 
-        public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
+        public async Task<IActionResult> Index(CancellationToken cancellationToken)
+
         {
-            var category = await _categoryRepository.GetOneAsync(e => e.Id == id, cancellationToken: cancellationToken);
+            var categories = await _categoryRepository.GetAsync(tracked: false, cancellationToken: cancellationToken);
 
-            if (category is not null)
-            { 
-                _categoryRepository.Delete(category);
-                await _categoryRepository.CommitAsync(cancellationToken);
-            }
-            return RedirectToAction(nameof(Index));
+            return View(categories);
         }
-
-
-
     }
 }

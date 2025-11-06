@@ -1,13 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Movie_Ticket_Booking.DataAccess;
 using Movie_Ticket_Booking.Models;
 using Movie_Ticket_Booking.Repositories;
 using Movie_Ticket_Booking.Repositories.IRepositories;
+using Movie_Ticket_Booking.Utitlies;
 using System.Threading;
 
 namespace Movie_Ticket_Booking.Areas.Admin.Controllers
 {
     [Area(areaName: "Admin")]
+    [Authorize(Roles = $"{SD.SUPER_ADMIN_ROLE},{SD.ADMIN_ROLE},{SD.EMPLOYEE_ROLE}")]
+
 
     public class CinemaController : Controller
     {
@@ -56,7 +60,8 @@ namespace Movie_Ticket_Booking.Areas.Admin.Controllers
             }
             return View(cinema);
         }
-
+        
+        [Authorize(Roles = $"{SD.SUPER_ADMIN_ROLE},{SD.ADMIN_ROLE}")]
         public async Task<IActionResult> Edit(int id, CancellationToken cancellationToken)
         {
 
@@ -71,6 +76,7 @@ namespace Movie_Ticket_Booking.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = $"{SD.SUPER_ADMIN_ROLE},{SD.ADMIN_ROLE}")]
         public async Task<IActionResult> Edit(Cinema cinema, IFormFile? logo, CancellationToken cancellationToken)
         {
             var existingCinema = await _cinemaRepository.GetOneAsync(e => e.Id == cinema.Id, cancellationToken: cancellationToken);
@@ -108,7 +114,8 @@ namespace Movie_Ticket_Booking.Areas.Admin.Controllers
             }
             return View(cinema);
         }
-
+        
+        [Authorize(Roles = $"{SD.SUPER_ADMIN_ROLE},{SD.ADMIN_ROLE}")]
         public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
         {
             var cinema = await _cinemaRepository.GetOneAsync(e => e.Id == id, cancellationToken: cancellationToken);

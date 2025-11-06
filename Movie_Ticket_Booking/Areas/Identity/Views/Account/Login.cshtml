@@ -1,0 +1,91 @@
+﻿@model Movie_Ticket_Booking.ViewModels.LoginVM
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow border-0">
+                <div class="card-body p-4">
+                    <h3 class="text-center mb-4">Welcome Back 🎬</h3>
+
+                    <form asp-action="Login" method="post" novalidate>
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                        <div class="form-group mb-3">
+                            <label class="form-label">Email Address</label> <input asp-for="UserNameOREmail" class="form-control" placeholder="Username or Email" />
+                            <span asp-validation-for="UserNameOREmail" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="Password" class="form-label"></label>
+                            <input asp-for="Password" class="form-control" placeholder="Password" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="form-check">
+                                <input asp-for="RememberMe" class="form-check-input" />
+                                <label asp-for="RememberMe" class="form-check-label"></label>
+                            </div>
+                            <div>
+                                <a asp-action="ForgetPassword" class="text-decoration-none small">Forget Password ?</a>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 py-2">Login</button>
+                    </form>
+
+                    <div class="position-relative mt-4">
+                        <hr />
+                        <div class="divider-content-center">or Log in with</div>
+                    </div>
+
+                    <div class="row g-2 mt-3">
+                        <div class="col-sm-6">
+                            <a class="btn btn-outline-google-plus d-block w-100" href="#">
+                                <span class="fab fa-google-plus-g me-2" data-fa-transform="grow-8"></span> Google
+                            </a>
+                        </div>
+                        <div class="col-sm-6">
+                            <a class="btn btn-outline-facebook d-block w-100" href="#">
+                                <span class="fab fa-facebook-square me-2" data-fa-transform="grow-8"></span> Facebook
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="position-relative mt-4">
+                        <hr class="text-muted" />
+                        <div class="divider-content-center text-muted fw-semibold">
+                            Didn't receive a confirmation email?
+                        </div>
+                    </div>
+
+                    <div class="mt-2">
+                        <a class="btn btn-outline-primary d-block w-100" asp-action="ResendEmailConfirmation">
+                            Resend Email Confirmation
+                        </a>
+                    </div>
+
+                    <div class="position-relative mt-4">
+                        <hr class="text-muted" />
+                        <div class="divider-content-center text-muted fw-semibold">
+                            Don’t have an account?
+                        </div>
+                    </div>
+
+                    <div class="mt-2">
+                        <a class="btn btn-outline-success d-block w-100" asp-action="Register">
+                            Register
+                        </a>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Cinema>
+﻿@using Movie_Ticket_Booking.Utitlies
+@model IEnumerable<Cinema>
 
 @{
     ViewData["Title"] = "Cinema";
@@ -30,17 +31,19 @@
                             <img src="@cinema.Logo" height="80" style="object-fit: cover; border-radius: 10px;" />
                         </td>
                         <td class="text-end">
-                            <div>
-                                <div>
-                                    <a href="/Admin/Cinema/Edit/@cinema.Id" class="btn btn-link p-0" data-bs-toggle="tooltip" title="Edit">
-                                        <span class="text-500 fas fa-edit"></span>
-                                    </a>
-
-                                    <a href="/Admin/Cinema/Delete/@cinema.Id" class="btn btn-link p-0 ms-2" data-bs-toggle="tooltip" title="Delete">
-                                        <span class="text-500 fas fa-trash-alt"></span>
-                                    </a>
-                                </div>
-                            </div>
+                            @if (User.IsInRole(SD.SUPER_ADMIN_ROLE) || User.IsInRole(SD.ADMIN_ROLE))
+                            {
+                                <a href="/Admin/Movie/Edit/@cinema.Id" class="btn btn-link p-0" data-bs-toggle="tooltip" title="Edit">
+                                    <span class="text-500 fas fa-edit"></span>
+                                </a>
+                                <a href="/Admin/Movie/Delete/@cinema.Id" class="btn btn-link p-0 ms-2" data-bs-toggle="tooltip" title="Delete">
+                                    <span class="text-500 fas fa-trash-alt"></span>
+                                </a>
+                            }
+                            else
+                            {
+                                <span class="text-muted">No Actions!</span>
+                            }
                         </td>
                     </tr>
                 }

@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Movie_Ticket_Booking.DataAccess;
 using Movie_Ticket_Booking.Models;
 using Movie_Ticket_Booking.Repositories;
 using Movie_Ticket_Booking.Repositories.IRepositories;
+using Movie_Ticket_Booking.Utitlies;
 using Movie_Ticket_Booking.ViewModels;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,6 +14,8 @@ using System.Threading.Tasks;
 namespace Movie_Ticket_Booking.Areas.Admin.Controllers
 {
     [Area(areaName: "Admin")]
+    [Authorize(Roles = $"{SD.SUPER_ADMIN_ROLE},{SD.ADMIN_ROLE},{SD.EMPLOYEE_ROLE}")]
+
     public class MovieController : Controller
     {
         ApplicationDbContext context;
@@ -136,7 +140,8 @@ namespace Movie_Ticket_Booking.Areas.Admin.Controllers
 
 
         }
-
+        
+        [Authorize(Roles = $"{SD.SUPER_ADMIN_ROLE},{SD.ADMIN_ROLE}")]
         public async Task<IActionResult> Edit(int id, CancellationToken cancellationToken)
         {
             var movie = await _movieRepository.GetOneAsync(e => e.Id == id, includes: [m => m.MovieSubImages, m => m.Actors], tracked: false, cancellationToken: cancellationToken);
@@ -163,6 +168,7 @@ namespace Movie_Ticket_Booking.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = $"{SD.SUPER_ADMIN_ROLE},{SD.ADMIN_ROLE}")]
         public async Task<IActionResult> Edit(MovieVM movieVM, IFormFile? poster, List<IFormFile>? subImgs, List<int>? Actors, CancellationToken cancellationToken)
         {
             var transaction = context.Database.BeginTransaction();
@@ -287,7 +293,8 @@ namespace Movie_Ticket_Booking.Areas.Admin.Controllers
                 return View(movieVM);
             }
         }
-
+        
+        [Authorize(Roles = $"{SD.SUPER_ADMIN_ROLE},{SD.ADMIN_ROLE}")]
         public async Task<IActionResult> Delete(int id)
         {
             var movie = await _movieRepository.GetOneAsync(e => e.Id == id);
