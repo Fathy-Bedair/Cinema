@@ -17,6 +17,10 @@ namespace Movie_Ticket_Booking.DataAccess
         public DbSet<MovieSubImage> MovieSubImages { get; set; } = null!;
         public DbSet<MovieActor> MovieActors { get; set; } = null!;
         public DbSet<ApplicationUserOTP> ApplicationUserOTPs { get; set; } = null!;
+        public DbSet<Cart> Carts { get; set; } = null!;
+        public DbSet<Promotion> Promotions { get; set; } = null!;
+        public DbSet<PromotionUsage> PromotionUsages { get; set; } = null!;
+
 
 
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -24,6 +28,6 @@ namespace Movie_Ticket_Booking.DataAccess
         //    base.OnConfiguring(optionsBuilder);
         //    optionsBuilder.UseSqlServer("Server=FAT7Y;Database=MovieTicketBookingDB;Trusted_Connection=True;TrustServerCertificate=True;");
         //}
-        
+
     }
 }

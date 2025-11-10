@@ -61,16 +61,23 @@
 
                     <div class="row g-2 mt-2">
                         <div class="col-sm-6">
-                            <a class="btn btn-outline-google-plus d-block w-100" href="#">
-                                <span class="fab fa-google-plus-g me-2" data-fa-transform="grow-8"></span> Google
-                            </a>
+                            <form asp-action="ExternalLogin" asp-controller="Account" method="post">
+                                <input type="hidden" name="provider" value="google" />
+                                <button type="submit" class="btn btn-outline-danger d-block w-100">
+                                    <i class="fab fa-google me-2"></i> Continue with Google
+                                </button>
+                            </form>
                         </div>
                         <div class="col-sm-6">
-                            <a class="btn btn-outline-facebook d-block w-100" href="#">
-                                <span class="fab fa-facebook-square me-2" data-fa-transform="grow-8"></span> Facebook
-                            </a>
+                            <form asp-action="ExternalLogin" asp-controller="Account" method="post">
+                                <input type="hidden" name="provider" value="Facebook" />
+                                <button type="submit" class="btn btn-outline-primary d-block w-100">
+                                    <i class="fab fa-facebook-f me-2"></i> Continue with Facebook
+                                </button>
+                            </form>
                         </div>
                     </div>
+
 
                     <div class="position-relative mt-4">
                         <hr class="text-muted" />

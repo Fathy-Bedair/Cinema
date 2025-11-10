@@ -7,6 +7,7 @@ using System.Diagnostics;
 namespace Movie_Ticket_Booking.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = $"{SD.SUPER_ADMIN_ROLE}")]
 
 
     public class HomeController : Controller

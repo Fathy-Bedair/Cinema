@@ -47,6 +47,10 @@ namespace ECommerce
             services.AddScoped<IMovieRepository, MovieRepository>();
             services.AddScoped<IMovieSubImageRepository, MovieSubImageRepository>();
             services.AddScoped<IRepository<ApplicationUserOTP>, Repository<ApplicationUserOTP>>();
+            services.AddScoped<IRepository<Cart>, Repository<Cart>>();
+            services.AddScoped<IRepository<Promotion>, Repository<Promotion>>();
+            services.AddScoped<IRepository<PromotionUsage>,Repository<PromotionUsage>>();
+
 
             services.AddScoped<IDBInitializer, DBInitializer>();
 

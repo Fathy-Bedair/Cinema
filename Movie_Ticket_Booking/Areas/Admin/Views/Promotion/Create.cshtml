@@ -1,0 +1,54 @@
+﻿@model Movie_Ticket_Booking.Models.Promotion
+
+@{
+    ViewData["Title"] = "Create Promotion";
+}
+
+<div class="container py-5">
+    <h2 class="mb-4"><i class="bi bi-plus-circle"></i> Add Promotion</h2>
+
+    <form asp-action="Create" method="post" class="card p-4 shadow-sm">
+        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+
+        <div class="mb-3">
+            <label for="MovieId" class="form-label">Product</label>
+            <select name="MovieId" class="form-select">
+                @foreach (var item in ViewBag.movies)
+                {
+                    <option value="@item.Id">@item.Title</option>
+                }
+            </select>
+            <span class="text-danger" asp-validation-for="@Model.MovieId"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Code" class="form-label"></label>
+            <input asp-for="Code" class="form-control" placeholder="e.g. SAVE20" />
+            <span asp-validation-for="Code" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Discount" class="form-label"></label>
+            <input asp-for="Discount" type="number" step="0.01" class="form-control" placeholder="Enter discount percentage" />
+            <span asp-validation-for="Discount" class="text-danger"></span>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label asp-for="PublishAt" class="form-label"></label>
+                <input asp-for="PublishAt" type="date" class="form-control" />
+            </div>
+            <div class="col-md-6 mb-3">
+                <label asp-for="ValidTo" class="form-label"></label>
+                <input asp-for="ValidTo" type="date" class="form-control" />
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-success"><i class="bi bi-save"></i> Save</button>
+        <a asp-action="Index" class="btn btn-outline-secondary ms-2">Back to List</a>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
